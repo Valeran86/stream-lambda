@@ -1,0 +1,25 @@
+Для маленького текста.
+
+Задача 1
+Без Stream:PT0.014659157S Со Stream:PT0.051945451S
+Задача 2
+Без Stream:PT0.003270711S Со Stream:PT0.014467478S
+Задача 3
+Без Stream:PT0.0139494S Со Stream:PT0.03109079S
+Задача 4
+Без Stream:PT0.01396924S Со Stream ArrayDeque:PT0.015276116S Со Stream CollectionsReverse:PT0.031095271S Со Stream IntStreamRange:PT0.015674194S
+Задача 5
+Без Stream:PT0.016249873S Со Stream:PT0.025961205S Со Stream:PT0.005316785S
+
+Для большого текста.
+
+Задача 1
+Без Stream:PT0.288731008S Со Stream:PT0.209242598S
+Задача 2
+Без Stream:PT0.080154009S Со Stream:PT0.427719408S
+Задача 3
+Без Stream:PT0.343903969S Со Stream:PT0.156572669S
+Задача 4
+Без Stream:PT0.133422015S Со Stream ArrayDeque:PT0.116108146S Со Stream CollectionsReverse:PT0.094136049S Со Stream IntStreamRange:PT0.092336054S
+Задача 5
+Без Stream:PT2.844710207S Со Stream:PT2.839545422S Со Stream DescendingIterator:PT2.781715509S

@@ -4,17 +4,16 @@ import ru.sbt.collections.utils.FileLoader;
 import ru.sbt.collections.utils.StringSplitter;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Реализуйте свой Iterator для обхода списка слов в обратном порядке.
  */
-public class Counter5ReverseIterator {
+class Counter5ReverseIterator {
 
-    public static void main( String[] args ) throws IOException, URISyntaxException {
+    static long notStream() throws IOException {
+        Long t1 = System.nanoTime();
         String file = FileLoader.loadFile();
         List<String> words = Arrays.asList( StringSplitter.getWords( file ) );
 
@@ -22,13 +21,15 @@ public class Counter5ReverseIterator {
 
         while ( reverseArrayIterator.hasNext() )
             System.out.println( reverseArrayIterator.next() );
+
+        return System.nanoTime() - t1;
     }
 
     static class ReverseIterator implements Iterator<String> {
         private int index;
         private final List<String> array;
 
-        public ReverseIterator( List<String> array ) {
+        ReverseIterator(List<String> array) {
             this.array = array;
             index = array.size();
         }
@@ -41,10 +42,63 @@ public class Counter5ReverseIterator {
         @Override
         public String next() {
             --index;
-            if ( index >= 0 && index < array.size() )
-                return array.get( index );
+            return index >= 0 && index < array.size() ? array.get(index) : null;
 
-            return null;
         }
     }
+
+    static long yesStream() throws IOException {
+        Long t1 = System.nanoTime();
+        String file = FileLoader.loadFile();
+        List<String> words = Arrays.asList( StringSplitter.getWords( file ) );
+
+        Iterator<String> reverseArrayIterator = new ReverseIterator( words );
+        reverseArrayIterator.forEachRemaining(System.out::println);
+        /*Iterable<String> iterable = () -> reverseArrayIterator;
+        StreamSupport.stream(iterable.spliterator(), false).forEach(System.out::println);*/
+
+
+        return System.nanoTime() - t1;
+    }
+
+    static long yesStreamDescendingIterator() throws IOException {
+        Long t1 = System.nanoTime();
+        String file = FileLoader.loadFile();
+        List<String> words = Arrays.asList( StringSplitter.getWords( file ) );
+
+        words.stream().collect(Collectors.toCollection(LinkedList::new)).descendingIterator()
+                .forEachRemaining(System.out::println);
+
+
+        return System.nanoTime() - t1;
+    }
+
+/*
+    public static long yesStreamIterable() throws IOException {
+        Long t1 = System.nanoTime();
+        String file = FileLoader.loadFile();
+        List<String> words = Arrays.asList( StringSplitter.getWords( file ) );
+
+        Iterator<String> reverseArrayIterator = new ReverseIterator( words );
+        Iterable<String> iterable = () -> reverseArrayIterator;
+        StreamSupport.stream(iterable.spliterator(), false).forEach(System.out::println);
+
+
+        long nanoDuration = System.nanoTime() - t1;
+        return nanoDuration;
+    }
+
+    public static long yesStreamSpliterators() throws IOException {
+        Long t1 = System.nanoTime();
+        String file = FileLoader.loadFile();
+        List<String> words = Arrays.asList( StringSplitter.getWords( file ) );
+
+        Iterator<String> reverseArrayIterator = new ReverseIterator( words );
+        StreamSupport.stream(Spliterators.spliteratorUnknownSize(reverseArrayIterator, Spliterator.ORDERED),
+                false).forEach(System.out::println);
+
+        long nanoDuration = System.nanoTime() - t1;
+        return nanoDuration;
+    }
+*/
 }
