@@ -14,8 +14,10 @@ import java.util.*;
  */
 public class Counter2DifferentWordsList {
 
-
-    public static void main( String[] args ) throws IOException, URISyntaxException {
+    public static void main( String[] args ) throws IOException, URISyntaxException{
+        v2();
+    }
+    static void v1() throws IOException, URISyntaxException {
         long t1 = System.nanoTime();
         String file = FileLoader.loadFile();
         String[] words = StringSplitter.getWords( file );
@@ -34,7 +36,18 @@ public class Counter2DifferentWordsList {
         Duration d = Duration.ofNanos( nanoDuration );
         System.out.println( d );
     }
+    static void v2() throws IOException, URISyntaxException {
+        long t1 = System.nanoTime();
+        String file = FileLoader.loadFile();
+        String[] words = StringSplitter.getWords( file );
 
+        LenghtComparator lenghtComparator = new LenghtComparator();
+        Arrays.stream(words).distinct().sorted(lenghtComparator).forEach(System.out::println);
+
+        long nanoDuration = System.nanoTime() - t1;
+        Duration d = Duration.ofNanos( nanoDuration );
+        System.out.println( d );
+    }
     static class LenghtComparator implements Comparator<String> {
 
         @Override
