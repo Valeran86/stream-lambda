@@ -1,9 +1,5 @@
 package ru.sbt.collections;
 
-import ru.sbt.collections.utils.FileLoader;
-import ru.sbt.collections.utils.StringSplitter;
-
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -14,10 +10,8 @@ import java.util.stream.Stream;
 class Counter2DifferentWordsList {
 
 
-    static long notStream() throws IOException {
+    static long notStream(String[] words) {
         long t1 = System.nanoTime();
-        String file = FileLoader.loadFile();
-        String[] words = StringSplitter.getWords( file );
 
         LenghtComparator lenghtComparator = new LenghtComparator();
         Set<String> sortedSet = new TreeSet<>( lenghtComparator );
@@ -26,8 +20,6 @@ class Counter2DifferentWordsList {
         sortedSet.iterator().forEachRemaining(
                 i -> System.out.println( "[" + i + "]" )
         );
-
-        System.out.println( "" + sortedSet.size() + '/' + words.length );
 
         return System.nanoTime() - t1;
     }
@@ -50,10 +42,8 @@ class Counter2DifferentWordsList {
         }
     }
 
-    static long yesStream() throws IOException {
+    static long yesStream(String[] words) {
         long t1 = System.nanoTime();
-        String file = FileLoader.loadFile();
-        String[] words = StringSplitter.getWords( file );
 
         Stream.of(words).distinct()
                 .sorted(Comparator.comparingInt(String::length))

@@ -1,11 +1,8 @@
 package ru.sbt.collections;
 
-import ru.sbt.collections.utils.FileLoader;
-import ru.sbt.collections.utils.StringSplitter;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -13,10 +10,9 @@ import java.util.stream.Stream;
  */
 class Counter3DifferentWordsCount {
 
-    static long notStream() throws IOException {
+    static long notStream(String[] words) {
         long t1 = System.nanoTime();
-        String file = FileLoader.loadFile();
-        String[] words = StringSplitter.getWords( file );
+
         Map<String, Integer> map = new HashMap<>();
         for ( String word : words ) {
             int value = 1;
@@ -32,10 +28,9 @@ class Counter3DifferentWordsCount {
         return System.nanoTime() - t1;
     }
 
-    static long yesStream() throws IOException {
+    static long yesStream(String[] words) {
         long t1 = System.nanoTime();
-        String file = FileLoader.loadFile();
-        String[] words = StringSplitter.getWords( file );
+
         Map<String, Integer> map = new HashMap<>();
         Stream.of(words).forEach(w->map.merge(w,1,Integer::sum));
 
@@ -44,5 +39,19 @@ class Counter3DifferentWordsCount {
 
         return System.nanoTime() - t1;
     }
+
+    static long yesStreamGrouping(String[] words){
+        long t1 = System.nanoTime();
+
+        Map<String, Long> map = Stream.of(words)
+                .collect(Collectors.groupingBy(t->t, Collectors.counting()));
+
+        System.out.println( map );
+        System.out.println( "" + map.size() + '/' + words.length );
+
+        return System.nanoTime() - t1;
+    }
+
+
 
 }
