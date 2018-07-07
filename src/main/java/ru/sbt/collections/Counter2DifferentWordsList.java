@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Выведите на экран список различных слов файла,
@@ -16,10 +18,17 @@ public class Counter2DifferentWordsList {
 
 
     public static void main( String[] args ) throws IOException, URISyntaxException {
+        oldCounter();
+        newCounter();
+
+
+
+    }
+
+    public static void oldCounter() throws IOException {
         long t1 = System.nanoTime();
         String file = FileLoader.loadFile();
         String[] words = StringSplitter.getWords( file );
-
         LenghtComparator lenghtComparator = new LenghtComparator();
         Set<String> sortedSet = new TreeSet<>( lenghtComparator );
         sortedSet.addAll( Arrays.asList( words ) );
@@ -33,6 +42,25 @@ public class Counter2DifferentWordsList {
         long nanoDuration = System.nanoTime() - t1;
         Duration d = Duration.ofNanos( nanoDuration );
         System.out.println( d );
+
+    }
+
+    public static void newCounter() throws IOException {
+        long t1 = System.nanoTime();
+        String file = FileLoader.loadFile();
+        String[] words = StringSplitter.getWords( file );
+         Arrays.sort(words, (firstStr, secondStr) -> Integer.compare(firstStr.length(), secondStr.length()));
+         Arrays.stream( words ).distinct().forEach( e -> System.out.println( e ) );
+
+        System.out.println( Arrays.stream( words ).distinct()) ;
+
+        long nanoDuration = System.nanoTime() - t1;
+        Duration d = Duration.ofNanos( nanoDuration );
+        System.out.println( d );
+
+
+
+
     }
 
     static class LenghtComparator implements Comparator<String> {
@@ -52,4 +80,9 @@ public class Counter2DifferentWordsList {
             return 0;
         }
     }
+
+
+
+
+
 }
