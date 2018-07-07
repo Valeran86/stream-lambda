@@ -65,4 +65,14 @@ class Counter5ReverseIterator {
 
         return System.nanoTime() - t1;
     }
+    
+    static long yesStreamReduce(String[] word) {
+        Long t1 = System.nanoTime();
+        List<String> words = Arrays.asList( word );
+
+        Arrays.stream(words.stream().reduce("", (e1, e2) -> e2 + " " + e1).split(" "))
+                .forEach(System.out::println);
+
+        return System.nanoTime() - t1;
+    }
 }
