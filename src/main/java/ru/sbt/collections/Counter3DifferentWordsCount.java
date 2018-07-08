@@ -1,21 +1,18 @@
 package ru.sbt.collections;
 
-import ru.sbt.collections.utils.FileLoader;
-import ru.sbt.collections.utils.StringSplitter;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Подсчитайте и выведите на экран сколько раз каждое слово встречается в файле.
  */
-public class Counter3DifferentWordsCount {
+class Counter3DifferentWordsCount {
 
-    public static void main( String[] args ) throws IOException, URISyntaxException {
-        String file = FileLoader.loadFile();
-        String[] words = StringSplitter.getWords( file );
+    static long notStream(String[] words) {
+        long t1 = System.nanoTime();
+
         Map<String, Integer> map = new HashMap<>();
         for ( String word : words ) {
             int value = 1;
@@ -27,5 +24,34 @@ public class Counter3DifferentWordsCount {
 
         System.out.println( map );
         System.out.println( "" + map.size() + '/' + words.length );
+
+        return System.nanoTime() - t1;
     }
+
+    static long yesStream(String[] words) {
+        long t1 = System.nanoTime();
+
+        Map<String, Integer> map = new HashMap<>();
+        Stream.of(words).forEach(w->map.merge(w,1,Integer::sum));
+
+        System.out.println( map );
+        System.out.println( "" + map.size() + '/' + words.length );
+
+        return System.nanoTime() - t1;
+    }
+
+    static long yesStreamGrouping(String[] words){
+        long t1 = System.nanoTime();
+
+        Map<String, Long> map = Stream.of(words)
+                .collect(Collectors.groupingBy(t->t, Collectors.counting()));
+
+        System.out.println( map );
+        System.out.println( "" + map.size() + '/' + words.length );
+
+        return System.nanoTime() - t1;
+    }
+
+
+
 }
