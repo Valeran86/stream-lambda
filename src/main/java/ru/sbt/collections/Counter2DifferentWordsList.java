@@ -4,35 +4,35 @@ import ru.sbt.collections.utils.FileLoader;
 import ru.sbt.collections.utils.StringSplitter;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Выведите на экран список различных слов файла,
  * отсортированный по возрастанию их длины.
  */
 public class Counter2DifferentWordsList {
+    private static String[] words;
 
+    static {
+        try {
+            words = StringSplitter.getWords( FileLoader.loadFile() );
+        } catch ( IOException e ) {
+            e.printStackTrace( System.out );
+        }
+    }
 
-    public static void main( String[] args ) throws IOException, URISyntaxException {
-        long t1 = System.nanoTime();
-        String file = FileLoader.loadFile();
-        String[] words = StringSplitter.getWords( file );
+    public static Result getResultOld( ) {
+        Result res = Result.of( "Counter2DifferentWordsList old", System.nanoTime() );
 
         LenghtComparator lenghtComparator = new LenghtComparator();
         Set<String> sortedSet = new TreeSet<>( lenghtComparator );
         sortedSet.addAll( Arrays.asList( words ) );
+        res.setFinish( System.nanoTime() );
+        res.setResult( sortedSet );
+        res.setResultSummary( "" + sortedSet.size() + '/' + words.length );
 
-        sortedSet.iterator().forEachRemaining(
-                i -> System.out.println( "[" + i + "]" )
-        );
-
-        System.out.println( "" + sortedSet.size() + '/' + words.length );
-
-        long nanoDuration = System.nanoTime() - t1;
-        Duration d = Duration.ofNanos( nanoDuration );
-        System.out.println( d );
+        return res;
     }
 
     static class LenghtComparator implements Comparator<String> {
@@ -41,7 +41,7 @@ public class Counter2DifferentWordsList {
         public int compare( String o1, String o2 ) {
             int n1 = o1.length();
             int n2 = o2.length();
-            if ( n1 == n2 )
+            if ( n1 != n2 )
                 return n1 - n2;
 
             int min = Math.min( n1, n2 );
@@ -52,4 +52,24 @@ public class Counter2DifferentWordsList {
             return 0;
         }
     }
+
+
+    public static Result getResultNew( ) {
+        Result res = Result.of( "Counter2DifferentWordsList new", System.nanoTime() );
+
+        LenghtComparator lenghtComparator = new LenghtComparator();
+        List<String> sortedSet = Arrays
+                .stream( words )
+                .distinct()
+                .sorted( lenghtComparator )
+                .collect( Collectors.toList() );
+
+        res.setFinish( System.nanoTime() );
+        res.setResult( sortedSet );
+        res.setResultSummary( "" + sortedSet.size() + '/' + words.length );
+
+        return res;
+    }
+
+
 }
