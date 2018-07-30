@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Выведите на экран список различных слов файла,
@@ -30,6 +31,19 @@ public class Counter2DifferentWordsList {
 
         System.out.println( "" + sortedSet.size() + '/' + words.length );
 
+        long nanoDuration = System.nanoTime() - t1;
+        Duration d = Duration.ofNanos( nanoDuration );
+        System.out.println( d );
+        stream();
+    }
+
+    public static void stream() throws IOException {
+        long t1 = System.nanoTime();
+        String file = FileLoader.loadFile();
+        Stream<String> stream = Arrays.stream( StringSplitter.getWords( file ) );
+        stream.distinct()
+              .sorted(Comparator.comparing(String::length))
+              .forEach(System.out::println);
         long nanoDuration = System.nanoTime() - t1;
         Duration d = Duration.ofNanos( nanoDuration );
         System.out.println( d );
